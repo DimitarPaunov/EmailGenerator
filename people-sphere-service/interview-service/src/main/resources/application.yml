@@ -1,0 +1,5 @@
+springdoc:
+  swagger-ui:
+    url: /interview-api/interview-api.yml
+server:
+  port: 8080

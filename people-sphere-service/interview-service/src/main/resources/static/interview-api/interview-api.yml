@@ -1,0 +1,211 @@
+openapi: 3.0.0
+
+info:
+  version: 1.0.0
+  title: Template Service
+  description: This is a Template YAML For Iuvo Microservices
+
+servers:
+  - url: http://localhost:8080
+    description: Local machine
+tags:
+  - name: "System"
+    description: All system methods
+  - name: "Templates"
+    description: All Template related methods
+  - name: "EmailGenerator"
+    description: All Email related methods
+
+paths:
+  /api/system/health:
+    get:
+      summary: This is a healtheck method
+      description: This method returns a 200 respponse for healthceck purposes
+      tags:
+        - "System"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/system/info:
+    get:
+      summary: This is a version method
+      description: This method returns the current application version
+      tags:
+        - "System"
+      responses:
+        "200":
+          $ref: "#/components/responses/SystemInfoResponse"
+  /api/emails:
+    post:
+      summary: Generate an email
+      description: Generates an email by applying an expression to provided input parameters.
+      tags:
+        - "EmailGenerator"
+      operationId: createEmail
+      requestBody:
+        description: This is a request body for generating an email using specific inputs and an expression.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailRequestData"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailDataResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    InfoHolder:
+      description: This is a object holding the version information
+      type: object
+      properties:
+        appBuildversion:
+          type: string
+        appBuildTime:
+          type: string
+    ErrorResponse:
+      description: This is the response object in case of errors, compliant with RFC7807
+      type: object
+      properties:
+        error:
+          $ref: "#/components/schemas/ErrorData"
+    ErrorData:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    EmailRequestData:
+      description: This is an email request object
+      type: object
+      required:
+        - expression
+        - inputs
+      properties:
+        expression:
+          type: string
+          description: The expression to use for generating the email.
+          example: "input1.eachWordFirstChars(1) ~ '.' ~ input2.lastWords(1) ~ '@' ~ input3 ~ '.' ~ input4 ~ '.' ~ input5"
+        inputs:
+          type: object
+          additionalProperties:
+            type: string
+          description: A map of input fields used for email generation. Each field should be referenced by its name in the expression.
+          example: { "input1": "Jean-Louis", "input2": "Jean-Charles Mignard", "input3": "external", "input4": "peoplespheres.fr", "input5": "fr" }
+    EmailDataResponse:
+      description: This is a Email Data Response object
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/EmailData"
+        error:
+          $ref: "#/components/schemas/ErrorData"
+    EmailData:
+      description: This is a ControllingData object
+      type: object
+      properties:
+        email:
+          type: string
+          example: "jl.mignard@external.peoplespheres.fr"
+    Template:
+      description: This is a Template object
+      type: object
+      properties:
+        foo:
+          type: string
+        bar:
+          type: string
+      discriminator:
+        propertyName: foo
+    TemplateFull:
+      description: This is a TemplateChild object that extends Template
+      allOf:
+        - $ref: "#/components/schemas/Template"
+      properties:
+        id:
+          type: integer
+    TemplateResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/TemplateFull"
+        error:
+          $ref: "#/components/schemas/ErrorData"
+    TemplateListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TemplateFull"
+        error:
+          $ref: "#/components/schemas/ErrorData"
+  responses:
+    SystemInfoResponse:
+      description: "System Version Response"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/components/schemas/InfoHolder"
+    BadRequest:
+      description: "BAD REQUEST"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: "UNAUTHORIZED"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: "FORBIDDEN"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: "NOT FOUND"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalServerError:
+      description: "INTERNAL SERVER ERROR"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+security:
+  - BearerAuth: [ ]

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">  
+  <modelVersion>4.0.0</modelVersion>  
+  <packaging>pom</packaging>  
+  <modules> 
+    <module>${service-project.name}</module>  
+    <module>${api-project.name}</module> 
+  </modules>  
+  <properties> 
+    <revision>0.1.0</revision>  
+    <parent-project.name>interview</parent-project.name>
+    <!--TODO change the parent project name-->
+    <service-project.name>interview-service</service-project.name>
+    <!--TODO change the service project name-->
+    <api-project.name>interview-api</api-project.name>
+    <!--TODO change the api project name-->
+    <maven.compiler.source>17</maven.compiler.source>  
+    <maven.compiler.target>17</maven.compiler.target>  
+    <java.version>17</java.version>  
+    <spring-boot.version>3.0.2</spring-boot.version>  
+    <openapi-generator-maven-plugin.version>6.2.0</openapi-generator-maven-plugin.version> 
+  </properties>  
+  <parent> 
+    <groupId>org.springframework.boot</groupId>  
+    <artifactId>spring-boot-starter-parent</artifactId>  
+    <version>3.0.2</version>  
+    <relativePath/>  
+    <!-- lookup parent from repository --> 
+  </parent>  
+  <groupId>com.cleverpine</groupId>
+  <artifactId>people-sphere-service</artifactId>
+  <!--TODO change with the parent project name-->
+  <version>${revision}</version>  
+  <name>interview</name>
+  <!--TODO change-->
+  <description>Interview service</description>
+  <!--TODO change-->
+  <dependencyManagement> 
+    <dependencies> 
+      <dependency> 
+        <groupId>org.springframework.boot</groupId>  
+        <artifactId>spring-boot-starter-web</artifactId>  
+        <version>${spring-boot.version}</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>org.springframework.security</groupId>  
+        <artifactId>spring-boot-starter-security</artifactId>  
+        <version>${spring-boot.version}</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>org.springframework.boot</groupId>  
+        <artifactId>spring-boot-starter-test</artifactId>  
+        <version>${spring-boot.version}</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>org.springdoc</groupId>  
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>  
+        <version>2.0.0</version> 
+      </dependency>  
+      <dependency> 
+        <artifactId>${api-project.name}</artifactId>  
+        <groupId>com.cleverpine</groupId>  
+        <version>${revision}</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>org.openapitools</groupId>  
+        <artifactId>jackson-databind-nullable</artifactId>  
+        <version>0.2.2</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>io.springfox</groupId>  
+        <artifactId>springfox-swagger2</artifactId>  
+        <version>3.0.0</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>ch.qos.logback</groupId>  
+        <artifactId>logback-classic</artifactId>  
+        <version>1.4.5</version> 
+      </dependency>  
+      <!--CP dependencies-->  
+      <dependency> 
+        <groupId>com.cleverpine</groupId>  
+        <artifactId>cp-virava-spring-helper</artifactId>  
+        <version>3.0.0</version> 
+      </dependency>  
+      <dependency> 
+        <groupId>com.cleverpine</groupId>  
+        <artifactId>cp-spring-error-util</artifactId>  
+        <version>2.0.0</version> 
+      </dependency> 
+    </dependencies> 
+  </dependencyManagement>  
+  <build> 
+    <pluginManagement> 
+      <plugins> 
+        <plugin> 
+          <groupId>org.springframework.boot</groupId>  
+          <artifactId>spring-boot-maven-plugin</artifactId>  
+          <version>${spring-boot.version}</version>  
+          <configuration> 
+            <excludes> 
+              <exclude> 
+                <groupId>org.projectlombok</groupId>  
+                <artifactId>lombok</artifactId> 
+              </exclude> 
+            </excludes> 
+          </configuration>  
+          <executions> 
+            <execution> 
+              <goals> 
+                <goal>build-info</goal> 
+              </goals> 
+            </execution> 
+          </executions> 
+        </plugin>  
+        <plugin> 
+          <groupId>org.openapitools</groupId>  
+          <artifactId>openapi-generator-maven-plugin</artifactId>  
+          <version>${openapi-generator-maven-plugin.version}</version> 
+        </plugin> 
+      </plugins> 
+    </pluginManagement> 
+  </build> 
+</project>
